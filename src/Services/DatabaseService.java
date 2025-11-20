@@ -22,7 +22,7 @@ public class DatabaseService {
         if (connection != null) return connection;
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/gamestore", "user", "mysql123");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3310/gamestore", "user", "mysql123");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
