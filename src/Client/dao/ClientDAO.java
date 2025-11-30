@@ -1,6 +1,6 @@
-package models.Client.dao;
+package Client.dao;
 
-import models.Client.entities.Client;
+import Client.entities.Client;
 
 import java.util.List;
 

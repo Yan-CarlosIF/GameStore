@@ -1,9 +1,9 @@
-package models.Client.dao.implementations;
+package Client.dao.implementations;
 
 import Services.DatabaseService;
-import models.Client.dao.ClientDAO;
-import models.Client.dao.implementations.exceptions.ClientNotFound;
-import models.Client.entities.Client;
+import Client.dao.ClientDAO;
+import Client.dao.implementations.exceptions.ClientNotFound;
+import Client.entities.Client;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

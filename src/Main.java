@@ -1,6 +1,6 @@
-import models.Client.dao.ClientDAO;
+import Client.dao.ClientDAO;
 import Services.DaoFactory;
-import models.Client.entities.Client;
+import Client.entities.Client;
 
 import java.util.Scanner;
 

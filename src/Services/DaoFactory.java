@@ -1,7 +1,7 @@
 package Services;
 
-import models.Client.dao.ClientDAO;
-import models.Client.dao.implementations.ClientDAOJDBC;
+import Client.dao.ClientDAO;
+import Client.dao.implementations.ClientDAOJDBC;
 
 public class DaoFactory {
     public static ClientDAO getClientDAO() {

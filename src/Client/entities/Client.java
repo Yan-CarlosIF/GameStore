@@ -1,4 +1,4 @@
-package models.Client.entities;
+package Client.entities;
 
 public class Client {
     private String cpf;

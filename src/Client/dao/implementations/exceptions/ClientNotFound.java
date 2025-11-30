@@ -1,4 +1,4 @@
-package models.Client.dao.implementations.exceptions;
+package Client.dao.implementations.exceptions;
 
 public class ClientNotFound extends Exception {
     public ClientNotFound() {
