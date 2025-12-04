@@ -1,43 +1,56 @@
-import Client.dao.ClientDAO;
-import Services.DaoFactory;
-import Client.entities.Client;
+import menus.*;
 
 import java.util.Scanner;
 
 public class Main {
     static Scanner sc = new Scanner(System.in);
-    static ClientDAO clientDAO = DaoFactory.getClientDAO();
 
     public static void main(String[] args) {
         int op;
 
         do {
-            System.out.println("E-Commerce GameStore");
-            System.out.println("0 - Sair");
-            System.out.println("1 - Listar todos os clientes");
-            System.out.println("2 - Buscar Cliente pelo CPF");
-            System.out.print("Insira: ");
+            System.out.println("\n╔══════════════════════════════════════╗");
+            System.out.println("║       E-COMMERCE GAMESTORE           ║");
+            System.out.println("╠══════════════════════════════════════╣");
+            System.out.println("║  0 - Sair                            ║");
+            System.out.println("║  1 - Gerenciar Clientes              ║");
+            System.out.println("║  2 - Gerenciar Produtos              ║");
+            System.out.println("║  3 - Gerenciar Jogos                 ║");
+            System.out.println("║  4 - Gerenciar Itens Eletrônicos     ║");
+            System.out.println("║  5 - Gerenciar Gêneros               ║");
+            System.out.println("║  6 - Gerenciar Pedidos               ║");
+            System.out.println("╚══════════════════════════════════════╝");
+            System.out.print("Escolha uma opção: ");
             op = sc.nextInt();
             sc.nextLine();
 
             switch (op) {
                 case 0:
-                    System.out.println("Programa finalizado.");
+                    System.out.println("Programa finalizado. Até logo!");
                     break;
                 case 1:
-                    clientDAO.find().forEach(System.out::println);
+                    ClientMenu.show(sc);
                     break;
-                case 2: {
-                    System.out.print("Insira o CPF do cliente que deseja buscar: ");
-                    String cpf = sc.nextLine();
-
-                    Client client = clientDAO.findByCPF(cpf);
-
-                    if (client != null) System.out.println(client);
-                } break;
+                case 2:
+                    ProductMenu.show(sc);
+                    break;
+                case 3:
+                    GameMenu.show(sc);
+                    break;
+                case 4:
+                    EletronicItemMenu.show(sc);
+                    break;
+                case 5:
+                    GenreMenu.show(sc);
+                    break;
+                case 6:
+                    OrderMenu.show(sc);
+                    break;
                 default:
                     System.out.println("\nOpção inválida!");
             }
         } while (op != 0);
+
+        sc.close();
     }
 }
