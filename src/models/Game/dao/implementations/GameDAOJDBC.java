@@ -268,13 +268,20 @@ public class GameDAOJDBC implements GameDAO {
             stGame.executeUpdate();
 
             connection.commit();
-        } catch (SQLException | GameNotFound e) {
+        } catch (SQLException e) {
             try {
                 connection.rollback();
             } catch (SQLException ex) {
                 throw new RuntimeException("Erro ao fazer rollback", ex);
             }
             throw new RuntimeException("Erro ao atualizar jogo", e);
+        } catch (GameNotFound e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erro ao fazer rollback", ex);
+            }
+            System.out.println(e.getMessage());
         } finally {
             try {
                 connection.setAutoCommit(true);
@@ -287,20 +294,24 @@ public class GameDAOJDBC implements GameDAO {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(double id) {
         PreparedStatement st = null;
 
         try {
             // Deletar da tabela Product (CASCADE irá deletar da tabela Game)
             st = connection.prepareStatement("DELETE FROM Product WHERE id = ?");
-            st.setString(1, id);
+            st.setDouble(1, id);
 
             int rows = st.executeUpdate();
             if (rows == 0) {
                 throw new GameNotFound();
             }
-        } catch (SQLException | GameNotFound e) {
+
+            System.out.println("Jogo deletado com sucesso!");
+        } catch (SQLException e) {
             throw new RuntimeException("Erro ao deletar jogo", e);
+        } catch (GameNotFound e) {
+            System.out.println(e.getMessage());
         } finally {
             db.closeStatement(st);
         }

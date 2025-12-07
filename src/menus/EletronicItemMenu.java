@@ -163,8 +163,8 @@ public class EletronicItemMenu {
 
     private static void delete(Scanner sc) {
         System.out.print("Informe o ID do item a deletar: ");
-        String id = sc.nextLine();
+        double id = sc.nextDouble();
+        sc.nextLine();
         eletronicItemDAO.delete(id);
-        System.out.println("Item eletrônico deletado com sucesso!");
     }
 }

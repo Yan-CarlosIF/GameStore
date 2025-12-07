@@ -211,9 +211,9 @@ public class GameMenu {
 
     private static void delete(Scanner sc) {
         System.out.print("Informe o ID do jogo a deletar: ");
-        String id = sc.nextLine();
+        double id = sc.nextDouble();
+        sc.nextLine();
         gameDAO.delete(id);
-        System.out.println("Jogo deletado com sucesso!");
     }
 
     private static void addGenreToGame(Scanner sc) {

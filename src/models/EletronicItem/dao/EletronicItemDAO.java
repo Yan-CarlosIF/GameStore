@@ -11,5 +11,5 @@ public interface EletronicItemDAO {
     List<EletronicItem> findByType(String type);
     void insert(EletronicItem eletronicItem);
     void update(EletronicItem eletronicItem);
-    void delete(String id);
+    void delete(double id);
 }

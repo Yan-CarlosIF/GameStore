@@ -143,27 +143,33 @@ public class GenreDAOJDBC implements GenreDAO {
             if (rows == 0) {
                 throw new GenreNotFound();
             }
-        } catch (SQLException | GenreNotFound e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar gênero", e);
+        } catch (GenreNotFound e) {
+            System.out.println(e.getMessage());
         } finally {
             db.closeStatement(st);
         }
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(double id) {
         PreparedStatement st = null;
 
         try {
             st = connection.prepareStatement("DELETE FROM Genre WHERE id = ?");
-            st.setString(1, id);
+            st.setDouble(1, id);
 
             int rows = st.executeUpdate();
             if (rows == 0) {
                 throw new GenreNotFound();
             }
-        } catch (SQLException | GenreNotFound e) {
+
+            System.out.println("Gênero deletado com sucesso!");
+        } catch (SQLException e) {
             throw new RuntimeException("Erro ao deletar gênero", e);
+        } catch (GenreNotFound e) {
+            System.out.println(e.getMessage());
         } finally {
             db.closeStatement(st);
         }

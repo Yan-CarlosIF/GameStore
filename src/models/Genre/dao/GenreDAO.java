@@ -10,5 +10,5 @@ public interface GenreDAO {
     Genre findByName(String name);
     void insert(Genre genre);
     void update(Genre genre);
-    void delete(String id);
+    void delete(double id);
 }

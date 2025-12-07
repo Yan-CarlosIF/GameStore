@@ -23,7 +23,6 @@ public class ClientDAOJDBC implements ClientDAO {
 
         List<Client> clients = new ArrayList<>();
 
-
         try {
             st = connection.prepareStatement("SELECT * FROM Client");
             rs = st.executeQuery();
@@ -107,8 +106,10 @@ public class ClientDAOJDBC implements ClientDAO {
             if (rows == 0) {
                 throw new ClientNotFound();
             }
-        } catch (SQLException | ClientNotFound e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar cliente", e);
+        } catch (ClientNotFound e) {
+            System.out.println(e.getMessage());
         } finally {
             db.closeStatement(st);
         }
@@ -138,18 +139,21 @@ public class ClientDAOJDBC implements ClientDAO {
     }
 
     @Override
-    public void delete(String cpf) {
+    public void delete(double cpf) {
         PreparedStatement st = null;
         try {
             st = connection.prepareStatement("DELETE FROM Client WHERE cpf = ?");
-            st.setString(1, cpf);
+            st.setDouble(1, cpf);
 
             int rows = st.executeUpdate();
             if (rows == 0) {
                 throw new ClientNotFound();
             }
-        } catch (SQLException | ClientNotFound e) {
+            System.out.println("Cliente deletado com sucesso!");
+        } catch (SQLException e) {
             throw new RuntimeException("Erro ao deletar cliente", e);
+        } catch (ClientNotFound e) {
+            System.out.println(e.getMessage());
         } finally {
             db.closeStatement(st);
         }

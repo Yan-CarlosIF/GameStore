@@ -118,26 +118,32 @@ public class ProductDAOJDBC implements ProductDAO {
             if (rows == 0) {
                 throw new ProductNotFound();
             }
-        } catch (SQLException | ProductNotFound e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar produto", e);
+        } catch (ProductNotFound e) {
+            System.out.println(e.getMessage());
         } finally {
             db.closeStatement(st);
         }
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(double id) {
         PreparedStatement st = null;
         try {
             st = connection.prepareStatement("DELETE FROM Product WHERE id = ?");
-            st.setString(1, id);
+            st.setDouble(1, id);
 
             int rows = st.executeUpdate();
             if (rows == 0) {
                 throw new ProductNotFound();
             }
-        } catch (SQLException | ProductNotFound e) {
+
+            System.out.println("Produto deletado com sucesso!");
+        } catch (SQLException e) {
             throw new RuntimeException("Erro ao deletar produto", e);
+        } catch (ProductNotFound e) {
+            System.out.println(e.getMessage());
         } finally {
             db.closeStatement(st);
         }

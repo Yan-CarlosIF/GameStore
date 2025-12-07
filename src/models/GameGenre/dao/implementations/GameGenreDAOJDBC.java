@@ -136,22 +136,24 @@ public class GameGenreDAOJDBC implements GameGenreDAO {
     }
 
     @Override
-    public void delete(String genreId, String productId) {
+    public void delete(double genreId, double productId) {
         PreparedStatement st = null;
 
         try {
             st = connection.prepareStatement(
                 "DELETE FROM GameGenre WHERE genre_id = ? AND product_id = ?"
             );
-            st.setString(1, genreId);
-            st.setString(2, productId);
+            st.setDouble(1, genreId);
+            st.setDouble(2, productId);
 
             int rows = st.executeUpdate();
             if (rows == 0) {
                 throw new GameGenreNotFound();
             }
-        } catch (SQLException | GameGenreNotFound e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Erro ao deletar relação jogo-gênero", e);
+        } catch (GameGenreNotFound e) {
+            System.out.println(e.getMessage());
         } finally {
             db.closeStatement(st);
         }

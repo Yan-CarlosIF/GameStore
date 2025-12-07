@@ -136,8 +136,8 @@ public class GenreMenu {
 
     private static void delete(Scanner sc) {
         System.out.print("Informe o ID do gênero a deletar: ");
-        String id = sc.nextLine();
+        double id = sc.nextDouble();
+        sc.nextLine();
         genreDAO.delete(id);
-        System.out.println("Gênero deletado com sucesso!");
     }
 }

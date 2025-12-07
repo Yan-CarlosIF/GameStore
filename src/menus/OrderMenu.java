@@ -208,8 +208,8 @@ public class OrderMenu {
 
     private static void delete(Scanner sc) {
         System.out.print("Informe o ID do pedido a deletar: ");
-        String id = sc.nextLine();
+        double id = sc.nextDouble();
+        sc.nextLine();
         orderDAO.delete(id);
-        System.out.println("Pedido deletado com sucesso!");
     }
 }

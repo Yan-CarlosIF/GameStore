@@ -10,5 +10,5 @@ public interface OrderDAO {
     List<Order> findByClientCpf(String cpf);
     void insert(Order order);
     void update(Order order);
-    void delete(String id);
+    void delete(double id);
 }

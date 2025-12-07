@@ -259,13 +259,20 @@ public class EletronicItemDAOJDBC implements EletronicItemDAO {
             stEletronic.executeUpdate();
 
             connection.commit();
-        } catch (SQLException | EletronicItemNotFound e) {
+        } catch (SQLException e) {
             try {
                 connection.rollback();
             } catch (SQLException ex) {
                 throw new RuntimeException("Erro ao fazer rollback", ex);
             }
             throw new RuntimeException("Erro ao atualizar item eletrônico", e);
+        } catch (EletronicItemNotFound e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erro ao fazer rollback", ex);
+            }
+            System.out.println(e.getMessage());
         } finally {
             try {
                 connection.setAutoCommit(true);
@@ -278,20 +285,24 @@ public class EletronicItemDAOJDBC implements EletronicItemDAO {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(double id) {
         PreparedStatement st = null;
 
         try {
             // Deletar da tabela Product (CASCADE irá deletar da tabela EletronicItem)
             st = connection.prepareStatement("DELETE FROM Product WHERE id = ?");
-            st.setString(1, id);
+            st.setDouble(1, id);
 
             int rows = st.executeUpdate();
             if (rows == 0) {
                 throw new EletronicItemNotFound();
             }
-        } catch (SQLException | EletronicItemNotFound e) {
+            
+            System.out.println("Item eletrônico deletado com sucesso!");
+        } catch (SQLException e) {
             throw new RuntimeException("Erro ao deletar item eletrônico", e);
+        } catch (EletronicItemNotFound e) {
+            System.out.println(e.getMessage());
         } finally {
             db.closeStatement(st);
         }

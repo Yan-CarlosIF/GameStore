@@ -4,6 +4,7 @@ import models.Client.dao.ClientDAO;
 import models.Client.entities.Client;
 import Services.DaoFactory;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ClientMenu {
@@ -51,7 +52,7 @@ public class ClientMenu {
 
     private static void listAll() {
         System.out.println("\n--- Lista de Clientes ---");
-        var clients = clientDAO.find();
+        List<Client> clients = clientDAO.find();
         if (clients.isEmpty()) {
             System.out.println("Nenhum cliente encontrado.");
         } else {
@@ -134,8 +135,8 @@ public class ClientMenu {
     private static void delete(Scanner sc) {
         System.out.println("\n--- Deletar Cliente ---");
         System.out.print("Informe o CPF do cliente a deletar: ");
-        String cpf = sc.nextLine();
+        double cpf = sc.nextDouble();
+        sc.nextLine();
         clientDAO.delete(cpf);
-        System.out.println("Cliente deletado com sucesso!");
     }
 }

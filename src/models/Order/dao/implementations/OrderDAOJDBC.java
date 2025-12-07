@@ -139,26 +139,32 @@ public class OrderDAOJDBC implements OrderDAO {
             if (rows == 0) {
                 throw new OrderNotFound();
             }
-        } catch (SQLException | OrderNotFound e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar pedido", e);
+        } catch (OrderNotFound e) {
+            System.out.println(e.getMessage());
         } finally {
             db.closeStatement(st);
         }
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(double id) {
         PreparedStatement st = null;
         try {
             st = connection.prepareStatement("DELETE FROM `Order` WHERE id = ?");
-            st.setString(1, id);
+            st.setDouble(1, id);
 
             int rows = st.executeUpdate();
             if (rows == 0) {
                 throw new OrderNotFound();
             }
-        } catch (SQLException | OrderNotFound e) {
+
+            System.out.println("Pedido deletado com sucesso!");
+        } catch (SQLException e) {
             throw new RuntimeException("Erro ao deletar pedido", e);
+        } catch (OrderNotFound e) {
+            System.out.println(e.getMessage());
         } finally {
             db.closeStatement(st);
         }

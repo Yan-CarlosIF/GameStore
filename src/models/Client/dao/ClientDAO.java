@@ -9,5 +9,5 @@ public interface ClientDAO {
     Client findByCPF(String cpf);
     void update(Client client);
     void insert(Client client);
-    void delete(String cpf);
+    void delete(double cpf);
 }

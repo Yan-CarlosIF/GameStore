@@ -55,9 +55,9 @@ public class ProductMenu {
         var products = productDAO.find();
         if (products.isEmpty()) {
             System.out.println("Nenhum produto encontrado.");
-        } else {
-            products.forEach(System.out::println);
+            return;
         }
+        products.forEach(System.out::println);
     }
 
     private static void findById(Scanner sc) {
@@ -123,8 +123,8 @@ public class ProductMenu {
 
     private static void delete(Scanner sc) {
         System.out.print("Informe o ID do produto a deletar: ");
-        String id = sc.nextLine();
+        double id = sc.nextDouble();
+        sc.nextLine();
         productDAO.delete(id);
-        System.out.println("Produto deletado com sucesso!");
     }
 }

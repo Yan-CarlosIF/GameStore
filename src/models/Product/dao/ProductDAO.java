@@ -9,5 +9,5 @@ public interface ProductDAO {
     Product findById(String id);
     void insert(Product product);
     void update(Product product);
-    void delete(String id);
+    void delete(double id);
 }

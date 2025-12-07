@@ -11,7 +11,7 @@ public interface GameGenreDAO {
     List<Genre> findGenresByGameId(String gameId);
     List<Game> findGamesByGenreId(String genreId);
     void insert(GameGenre gameGenre);
-    void delete(String genreId, String productId);
+    void delete(double genreId, double productId);
     void deleteAllByGameId(String gameId);
     void deleteAllByGenreId(String genreId);
 }

@@ -11,5 +11,5 @@ public interface GameDAO {
     List<Game> findByPlatform(String platform);
     void insert(Game game);
     void update(Game game);
-    void delete(String id);
+    void delete(double id);
 }

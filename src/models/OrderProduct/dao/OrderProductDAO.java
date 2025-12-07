@@ -13,6 +13,6 @@ public interface OrderProductDAO {
     List<Product> findProductsByOrderId(String orderId);
     void insert(OrderProduct orderProduct);
     void update(OrderProduct orderProduct);
-    void delete(String id);
+    void delete(double id);
     void deleteAllByOrderId(String orderId);
 }
