@@ -18,6 +18,10 @@ public class GameMenu {
     private static final GameDAO gameDAO = DaoFactory.getGameDAO();
     private static final GameGenreDAO gameGenreDAO = DaoFactory.getGameGenreDAO();
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    
+    static {
+        sdf.setLenient(false); // Validação rigorosa de datas
+    }
 
     public static void show(Scanner sc) {
         int op;
@@ -153,7 +157,7 @@ public class GameMenu {
             gameDAO.insert(game);
             System.out.println("Jogo inserido com sucesso! ID: " + game.getId());
         } catch (ParseException e) {
-            System.out.println("Erro: Formato de data inválido!");
+            System.out.println("Erro: Data inválida! Use o formato dd/MM/yyyy e verifique se o dia, mês e ano são válidos.");
         }
     }
 
@@ -190,7 +194,7 @@ public class GameMenu {
             try {
                 releaseDate = sdf.parse(dateStr);
             } catch (ParseException e) {
-                System.out.println("Formato de data inválido, mantendo data anterior.");
+                System.out.println("Data inválida! Use o formato dd/MM/yyyy e verifique se o dia, mês e ano são válidos. Mantendo data anterior.");
             }
         }
 

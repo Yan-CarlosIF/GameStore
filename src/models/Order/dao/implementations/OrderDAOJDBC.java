@@ -102,22 +102,32 @@ public class OrderDAOJDBC implements OrderDAO {
     }
 
     @Override
-    public void insert(Order order) {
+    public int insert(Order order) {
         PreparedStatement st = null;
+        ResultSet generatedKeys = null;
         try {
             st = connection.prepareStatement(
-                    "INSERT INTO `Order` (id, total_value, status, data, client_cpf) VALUES (?, ?, ?, ?, ?)"
+                    "INSERT INTO `Order` (total_value, status, data, client_cpf) VALUES (?, ?, ?, ?)",
+                    PreparedStatement.RETURN_GENERATED_KEYS
             );
-            st.setString(1, order.getId());
-            st.setBigDecimal(2, order.getTotalValue() == null ? BigDecimal.ZERO : order.getTotalValue());
-            st.setString(3, order.getStatus() == null ? "pending" : order.getStatus());
+            st.setBigDecimal(1, order.getTotalValue() == null ? BigDecimal.ZERO : order.getTotalValue());
+            st.setString(2, order.getStatus() == null ? "pending" : order.getStatus());
             java.sql.Date sqlDate = order.getDate() == null ? new java.sql.Date(new Date().getTime()) : new java.sql.Date(order.getDate().getTime());
-            st.setDate(4, sqlDate);
-            st.setString(5, order.getClientCpf());
+            st.setDate(3, sqlDate);
+            st.setString(4, order.getClientCpf());
             st.executeUpdate();
+            
+            generatedKeys = st.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int generatedId = generatedKeys.getInt(1);
+                order.setId(String.valueOf(generatedId));
+                return generatedId;
+            }
+            return -1;
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir pedido", e);
         } finally {
+            db.closeResultSet(generatedKeys);
             db.closeStatement(st);
         }
     }

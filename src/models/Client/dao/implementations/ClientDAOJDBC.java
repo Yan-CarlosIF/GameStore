@@ -139,11 +139,11 @@ public class ClientDAOJDBC implements ClientDAO {
     }
 
     @Override
-    public void delete(double cpf) {
+    public void delete(String cpf) {
         PreparedStatement st = null;
         try {
             st = connection.prepareStatement("DELETE FROM Client WHERE cpf = ?");
-            st.setDouble(1, cpf);
+            st.setString(1, cpf);
 
             int rows = st.executeUpdate();
             if (rows == 0) {

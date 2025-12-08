@@ -135,8 +135,7 @@ public class ClientMenu {
     private static void delete(Scanner sc) {
         System.out.println("\n--- Deletar Cliente ---");
         System.out.print("Informe o CPF do cliente a deletar: ");
-        double cpf = sc.nextDouble();
-        sc.nextLine();
+        String cpf = sc.nextLine();
         clientDAO.delete(cpf);
     }
 }

@@ -8,7 +8,7 @@ public interface OrderDAO {
     List<Order> find();
     Order findById(String id);
     List<Order> findByClientCpf(String cpf);
-    void insert(Order order);
+    int insert(Order order);
     void update(Order order);
     void delete(double id);
 }
