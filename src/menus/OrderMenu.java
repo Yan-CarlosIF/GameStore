@@ -1,6 +1,7 @@
 package menus;
 
 import models.Client.dao.ClientDAO;
+import models.Client.dao.implementations.exceptions.CPFNotValid;
 import models.Order.dao.OrderDAO;
 import models.Order.entitites.Order;
 import models.OrderProduct.dao.OrderProductDAO;
@@ -23,10 +24,16 @@ public class OrderMenu {
     private static final OrderProductDAO orderProductDAO = DaoFactory.getOrderProductDAO();
     private static final ProductDAO productDAO = DaoFactory.getProductDAO();
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-    private static final String[] statusOptions = { "delivered", "pending", "cancelled", "shipping" };
-    
+
     static {
         sdf.setLenient(false); // Validação rigorosa de datas
+    }
+
+    private static boolean isValidCPF(String cpf) {
+        if (cpf == null || cpf.length() != 11) {
+            return false;
+        }
+        return cpf.matches("\\d{11}");
     }
 
     public static void show(Scanner sc) {
@@ -103,6 +110,7 @@ public class OrderMenu {
     private static void findByClientCpf(Scanner sc) {
         System.out.print("Informe o CPF do cliente: ");
         String cpf = sc.nextLine();
+        
         var orders = orderDAO.findByClientCpf(cpf);
         if (orders.isEmpty()) {
             System.out.println("Nenhum pedido encontrado para este cliente.");
@@ -134,6 +142,16 @@ public class OrderMenu {
         System.out.println("\n--- Inserir Pedido ---");
         System.out.print("CPF do cliente: ");
         String clientCpf = sc.nextLine();
+        
+        try {
+            if (!isValidCPF(clientCpf)) {
+                throw new CPFNotValid();
+            }
+        } catch (CPFNotValid e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         // se cliente não for encontrado joga exceção
         if (clientDAO.findByCPF(clientCpf) == null) return;
 
@@ -322,8 +340,18 @@ public class OrderMenu {
             status = "pending";
         }
         
-        System.out.print("Novo CPF do cliente (Enter para manter): ");  
+        System.out.print("Novo CPF do cliente (Enter para manter): ");
         String clientCpf = sc.nextLine();
+        
+        try {
+            if (!clientCpf.isEmpty() && !isValidCPF(clientCpf)) {
+                throw new CPFNotValid();
+            }
+        } catch (CPFNotValid e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         System.out.print("Nova data (dd/MM/yyyy, Enter para manter): ");
         String dateStr = sc.nextLine();
 

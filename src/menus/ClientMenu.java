@@ -1,6 +1,7 @@
 package menus;
 
 import models.Client.dao.ClientDAO;
+import models.Client.dao.implementations.exceptions.CPFNotValid;
 import models.Client.entities.Client;
 import Services.DaoFactory;
 
@@ -9,6 +10,13 @@ import java.util.Scanner;
 
 public class ClientMenu {
     private static final ClientDAO clientDAO = DaoFactory.getClientDAO();
+
+    private static boolean isValidCPF(String cpf) {
+        if (cpf == null || cpf.length() != 11) {
+            return false;
+        }
+        return cpf.matches("\\d{11}");
+    }
 
     public static void show(Scanner sc) {
         int op;
@@ -72,70 +80,90 @@ public class ClientMenu {
 
     private static void insert(Scanner sc) {
         System.out.println("\n--- Inserir Cliente ---");
-        System.out.print("CPF: ");
-        String cpf = sc.nextLine();
-        System.out.print("Nome: ");
-        String name = sc.nextLine();
-        System.out.print("Telefone: ");
-        String phone = sc.nextLine();
-        System.out.print("Email: ");
-        String email = sc.nextLine();
-        System.out.print("Rua: ");
-        String street = sc.nextLine();
-        System.out.print("Cidade: ");
-        String city = sc.nextLine();
-        System.out.print("Número da casa: ");
-        int houseNumber = sc.nextInt();
-        sc.nextLine();
 
-        Client client = new Client(cpf, phone, name, email, street, city, houseNumber);
-        clientDAO.insert(client);
-        System.out.println("Cliente inserido com sucesso!");
+        try {
+            System.out.print("CPF : ");
+            String cpf = sc.nextLine();
+            
+            if (!isValidCPF(cpf)) {
+                throw new CPFNotValid();
+            }
+
+            System.out.print("Nome: ");
+            String name = sc.nextLine();
+            System.out.print("Telefone: ");
+            String phone = sc.nextLine();
+            System.out.print("Email: ");
+            String email = sc.nextLine();
+            System.out.print("Rua: ");
+            String street = sc.nextLine();
+            System.out.print("Cidade: ");
+            String city = sc.nextLine();
+            System.out.print("Número da casa: ");
+            int houseNumber = sc.nextInt();
+            sc.nextLine();
+
+            Client client = new Client(cpf, phone, name, email, street, city, houseNumber);
+            clientDAO.insert(client);
+            System.out.println("Cliente inserido com sucesso!");
+        } catch (CPFNotValid e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private static void update(Scanner sc) {
         System.out.println("\n--- Atualizar Cliente ---");
-        System.out.print("Informe o CPF do cliente a atualizar: ");
-        String cpf = sc.nextLine();
+        
+        try {
+            System.out.print("Informe o CPF do cliente a atualizar: ");
+            String cpf = sc.nextLine();
+            
+            if (!isValidCPF(cpf)) {
+                throw new CPFNotValid();
+            }
 
-        Client existingClient = clientDAO.findByCPF(cpf);
-        if (existingClient == null) {
-            return;
+            Client existingClient = clientDAO.findByCPF(cpf);
+            if (existingClient == null) {
+                return;
+            }
+
+            System.out.println("Cliente encontrado: " + existingClient);
+            System.out.print("Novo nome (Enter para manter): ");
+            String name = sc.nextLine();
+            System.out.print("Novo telefone (Enter para manter): ");
+            String phone = sc.nextLine();
+            System.out.print("Novo email (Enter para manter): ");
+            String email = sc.nextLine();
+            System.out.print("Nova rua (Enter para manter): ");
+            String street = sc.nextLine();
+            System.out.print("Nova cidade (Enter para manter): ");
+            String city = sc.nextLine();
+            System.out.print("Novo número da casa (0 para manter): ");
+            int houseNumber = sc.nextInt();
+            sc.nextLine();
+
+            Client updatedClient = new Client(
+                    cpf,
+                    phone.isEmpty() ? existingClient.getPhone() : phone,
+                    name.isEmpty() ? existingClient.getName() : name,
+                    email.isEmpty() ? existingClient.getEmail() : email,
+                    street.isEmpty() ? existingClient.getStreet() : street,
+                    city.isEmpty() ? existingClient.getCity() : city,
+                    houseNumber == 0 ? existingClient.getHouseNumber() : houseNumber
+            );
+
+            clientDAO.update(updatedClient);
+            System.out.println("Cliente atualizado com sucesso!");
+        } catch (CPFNotValid e) {
+            System.out.println(e.getMessage());
         }
-
-        System.out.println("Cliente encontrado: " + existingClient);
-        System.out.print("Novo nome (Enter para manter): ");
-        String name = sc.nextLine();
-        System.out.print("Novo telefone (Enter para manter): ");
-        String phone = sc.nextLine();
-        System.out.print("Novo email (Enter para manter): ");
-        String email = sc.nextLine();
-        System.out.print("Nova rua (Enter para manter): ");
-        String street = sc.nextLine();
-        System.out.print("Nova cidade (Enter para manter): ");
-        String city = sc.nextLine();
-        System.out.print("Novo número da casa (0 para manter): ");
-        int houseNumber = sc.nextInt();
-        sc.nextLine();
-
-        Client updatedClient = new Client(
-                cpf,
-                phone.isEmpty() ? existingClient.getPhone() : phone,
-                name.isEmpty() ? existingClient.getName() : name,
-                email.isEmpty() ? existingClient.getEmail() : email,
-                street.isEmpty() ? existingClient.getStreet() : street,
-                city.isEmpty() ? existingClient.getCity() : city,
-                houseNumber == 0 ? existingClient.getHouseNumber() : houseNumber
-        );
-
-        clientDAO.update(updatedClient);
-        System.out.println("Cliente atualizado com sucesso!");
     }
 
     private static void delete(Scanner sc) {
         System.out.println("\n--- Deletar Cliente ---");
         System.out.print("Informe o CPF do cliente a deletar: ");
         String cpf = sc.nextLine();
+        
         clientDAO.delete(cpf);
     }
 }
