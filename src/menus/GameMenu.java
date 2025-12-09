@@ -5,6 +5,8 @@ import models.Game.entities.Game;
 import models.GameGenre.dao.GameGenreDAO;
 import models.GameGenre.entities.GameGenre;
 import models.Genre.entities.Genre;
+import models.Product.dao.implementations.exceptions.ProductPriceNegative;
+import models.Product.dao.implementations.exceptions.ProductStockNegative;
 import Services.DaoFactory;
 
 import java.math.BigDecimal;
@@ -136,14 +138,34 @@ public class GameMenu {
         System.out.println("\n--- Inserir Jogo ---");
         System.out.print("Nome: ");
         String name = sc.nextLine();
+        
         System.out.print("Preço: ");
         BigDecimal price = sc.nextBigDecimal();
         sc.nextLine();
+        try {
+            if (price.compareTo(BigDecimal.ZERO) < 0) {
+                throw new ProductPriceNegative();
+            }
+        } catch (ProductPriceNegative e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         System.out.print("Descrição: ");
         String description = sc.nextLine();
+        
         System.out.print("Estoque: ");
         int stock = sc.nextInt();
         sc.nextLine();
+        try {
+            if (stock < 0) {
+                throw new ProductStockNegative();
+            }
+        } catch (ProductStockNegative e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         System.out.print("Desenvolvedor: ");
         String developer = sc.nextLine();
         System.out.print("Plataforma: ");
@@ -174,14 +196,36 @@ public class GameMenu {
         System.out.println("Jogo encontrado: " + existingGame);
         System.out.print("Novo nome (Enter para manter): ");
         String name = sc.nextLine();
+        
         System.out.print("Novo preço (0 para manter): ");
         BigDecimal price = sc.nextBigDecimal();
         sc.nextLine();
+        BigDecimal finalPrice = price.compareTo(BigDecimal.ZERO) == 0 ? existingGame.getPrice() : price;
+        try {
+            if (finalPrice.compareTo(BigDecimal.ZERO) < 0) {
+                throw new ProductPriceNegative();
+            }
+        } catch (ProductPriceNegative e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         System.out.print("Nova descrição (Enter para manter): ");
         String description = sc.nextLine();
+        
         System.out.print("Novo estoque (-1 para manter): ");
         int stock = sc.nextInt();
         sc.nextLine();
+        int finalStock = stock == -1 ? existingGame.getStock() : stock;
+        try {
+            if (finalStock < 0) {
+                throw new ProductStockNegative();
+            }
+        } catch (ProductStockNegative e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         System.out.print("Novo desenvolvedor (Enter para manter): ");
         String developer = sc.nextLine();
         System.out.print("Nova plataforma (Enter para manter): ");
@@ -201,9 +245,9 @@ public class GameMenu {
         Game updatedGame = new Game(
                 id,
                 name.isEmpty() ? existingGame.getName() : name,
-                price.compareTo(BigDecimal.ZERO) == 0 ? existingGame.getPrice() : price,
+                finalPrice,
                 description.isEmpty() ? existingGame.getDescription() : description,
-                stock == -1 ? existingGame.getStock() : stock,
+                finalStock,
                 developer.isEmpty() ? existingGame.getDeveloper() : developer,
                 platform.isEmpty() ? existingGame.getPlatform() : platform,
                 releaseDate

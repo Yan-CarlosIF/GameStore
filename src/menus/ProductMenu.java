@@ -2,6 +2,8 @@ package menus;
 
 import models.Product.dao.ProductDAO;
 import models.Product.entities.Product;
+import models.Product.dao.implementations.exceptions.ProductPriceNegative;
+import models.Product.dao.implementations.exceptions.ProductStockNegative;
 import Services.DaoFactory;
 
 import java.math.BigDecimal;
@@ -73,15 +75,34 @@ public class ProductMenu {
         System.out.println("\n--- Inserir Produto ---");
         System.out.print("Nome: ");
         String name = sc.nextLine();
+        
         System.out.print("Preço: ");
         BigDecimal price = sc.nextBigDecimal();
         sc.nextLine();
+        try {
+            if (price.compareTo(BigDecimal.ZERO) < 0) {
+                throw new ProductPriceNegative();
+            }
+        } catch (ProductPriceNegative e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         System.out.print("Descrição: ");
         String description = sc.nextLine();
+        
         System.out.print("Estoque: ");
         int stock = sc.nextInt();
         sc.nextLine();
-
+        try {
+            if (stock < 0) {
+                throw new ProductStockNegative();
+            }
+        } catch (ProductStockNegative e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         Product product = new Product(name, price, description, stock);
         productDAO.insert(product);
         System.out.println("Produto inserido com sucesso!");
@@ -100,21 +121,42 @@ public class ProductMenu {
         System.out.println("Produto encontrado: " + existingProduct);
         System.out.print("Novo nome (Enter para manter): ");
         String name = sc.nextLine();
+        
         System.out.print("Novo preço (0 para manter): ");
         BigDecimal price = sc.nextBigDecimal();
         sc.nextLine();
+        BigDecimal finalPrice = price.compareTo(BigDecimal.ZERO) == 0 ? existingProduct.getPrice() : price;
+        try {
+            if (finalPrice.compareTo(BigDecimal.ZERO) < 0) {
+                throw new ProductPriceNegative();
+            }
+        } catch (ProductPriceNegative e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         System.out.print("Nova descrição (Enter para manter): ");
         String description = sc.nextLine();
+        
         System.out.print("Novo estoque (-1 para manter): ");
         int stock = sc.nextInt();
         sc.nextLine();
-
+        int finalStock = stock == -1 ? existingProduct.getStock() : stock;
+        try {
+            if (finalStock < 0) {
+                throw new ProductStockNegative();
+            }
+        } catch (ProductStockNegative e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         Product updatedProduct = new Product(
                 id,
                 name.isEmpty() ? existingProduct.getName() : name,
-                price.compareTo(BigDecimal.ZERO) == 0 ? existingProduct.getPrice() : price,
+                finalPrice,
                 description.isEmpty() ? existingProduct.getDescription() : description,
-                stock == -1 ? existingProduct.getStock() : stock
+                finalStock
         );
 
         productDAO.update(updatedProduct);

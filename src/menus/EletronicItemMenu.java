@@ -2,6 +2,8 @@ package menus;
 
 import models.EletronicItem.dao.EletronicItemDAO;
 import models.EletronicItem.entities.EletronicItem;
+import models.Product.dao.implementations.exceptions.ProductPriceNegative;
+import models.Product.dao.implementations.exceptions.ProductStockNegative;
 import Services.DaoFactory;
 
 import java.math.BigDecimal;
@@ -103,14 +105,34 @@ public class EletronicItemMenu {
         System.out.println("\n--- Inserir Item Eletrônico ---");
         System.out.print("Nome: ");
         String name = sc.nextLine();
+        
         System.out.print("Preço: ");
         BigDecimal price = sc.nextBigDecimal();
         sc.nextLine();
+        try {
+            if (price.compareTo(BigDecimal.ZERO) < 0) {
+                throw new ProductPriceNegative();
+            }
+        } catch (ProductPriceNegative e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         System.out.print("Descrição: ");
         String description = sc.nextLine();
+        
         System.out.print("Estoque: ");
         int stock = sc.nextInt();
         sc.nextLine();
+        try {
+            if (stock < 0) {
+                throw new ProductStockNegative();
+            }
+        } catch (ProductStockNegative e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         System.out.print("Produtor: ");
         String producer = sc.nextLine();
         System.out.print("Tipo: ");
@@ -134,14 +156,36 @@ public class EletronicItemMenu {
         System.out.println("Item encontrado: " + existingItem);
         System.out.print("Novo nome (Enter para manter): ");
         String name = sc.nextLine();
+        
         System.out.print("Novo preço (0 para manter): ");
         BigDecimal price = sc.nextBigDecimal();
         sc.nextLine();
+        BigDecimal finalPrice = price.compareTo(BigDecimal.ZERO) == 0 ? existingItem.getPrice() : price;
+        try {
+            if (finalPrice.compareTo(BigDecimal.ZERO) < 0) {
+                throw new ProductPriceNegative();
+            }
+        } catch (ProductPriceNegative e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         System.out.print("Nova descrição (Enter para manter): ");
         String description = sc.nextLine();
+        
         System.out.print("Novo estoque (-1 para manter): ");
         int stock = sc.nextInt();
         sc.nextLine();
+        int finalStock = stock == -1 ? existingItem.getStock() : stock;
+        try {
+            if (finalStock < 0) {
+                throw new ProductStockNegative();
+            }
+        } catch (ProductStockNegative e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        
         System.out.print("Novo produtor (Enter para manter): ");
         String producer = sc.nextLine();
         System.out.print("Novo tipo (Enter para manter): ");
@@ -150,9 +194,9 @@ public class EletronicItemMenu {
         EletronicItem updatedItem = new EletronicItem(
                 id,
                 name.isEmpty() ? existingItem.getName() : name,
-                price.compareTo(BigDecimal.ZERO) == 0 ? existingItem.getPrice() : price,
+                finalPrice,
                 description.isEmpty() ? existingItem.getDescription() : description,
-                stock == -1 ? existingItem.getStock() : stock,
+                finalStock,
                 producer.isEmpty() ? existingItem.getProducer() : producer,
                 type.isEmpty() ? existingItem.getType() : type
         );
